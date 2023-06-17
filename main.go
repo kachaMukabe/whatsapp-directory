@@ -2,28 +2,17 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
-
-func getEnvVariable(key string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	return os.Getenv("VERIFYTOKEN")
-}
 
 func verifyWebhook(c *gin.Context) {
 	mode := c.Query("hub.mode")
 	challenge := c.Query("hub.challenge")
 	verifyToken := c.Query("hub.verify_token")
-	token := getEnvVariable("VERIFYTOKEN")
+	token := os.Getenv("VERIFYTOKEN")
 
 	if mode == "subscribe" && verifyToken == token {
 		c.String(http.StatusOK, "%s", challenge)
